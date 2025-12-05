@@ -7,10 +7,11 @@ dotenv.config({
 });
 
 const port = process.env.PORT || 3000;
+const HOST = "0.0.0.0";
 
 connectDB()
   .then(() => {
-    app.listen(port, () => {
+    app.listen(port, HOST, () => {
       console.log(`Example app listening on port http://localhost:${port}`);
     });
   })

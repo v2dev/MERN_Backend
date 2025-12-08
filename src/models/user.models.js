@@ -57,6 +57,12 @@ const userSchema = new Schema(
     emailVerificationExpiry: {
       type: Date,
     },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",   // must match model name in category.models.js
+      required: false,   // make true if every user must belong to a category
+},
+
   },
   {
     timestamps: true,

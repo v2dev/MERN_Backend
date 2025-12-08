@@ -42,24 +42,5 @@ export const getAllCategories = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, { lists: lists }, "Lists fetched successfully"));
 });
 
-const getCategoryById = asyncHandler(async (req, res) => {
-
-  const { id } = req.params;   // ✅ get id from URL
-
-  const category = await Category.findById(id)
-    .select("-password -refreshToken")
-    .lean();
-
-  if (!category) {
-    throw new ApiError(404, "Category not found");
-  }
-
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(200, { contact }, "Contact fetched successfully")
-    );
-});
-
 
 

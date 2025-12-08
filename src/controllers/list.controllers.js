@@ -29,6 +29,7 @@ const getAllLists = asyncHandler(async (req, res) => {
 const getContactById = asyncHandler(async (req, res) => {
 
   const { id } = req.params;   // ✅ get id from URL
+  console.log("Contact ID from URL:", id); // ✅ debug
 
   const contact = await User.findById(id)
     .select("-password -refreshToken")
@@ -45,6 +46,47 @@ const getContactById = asyncHandler(async (req, res) => {
     );
 });
 
+const getContactsByCategory = asyncHandler(async (req, res) => {
+  const { id } = req.params;   // this id is categoryId
+  console.log("Category ID from URL:", id);
 
-export { getAllLists , getContactById};
+  const contacts = await User.find({ category: id })
+    .select("-password -refreshToken")
+    .lean();
+
+  if (!contacts || contacts.length === 0) {
+    throw new ApiError(404, "No contacts found for this category");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, { contacts }, "Contacts fetched successfully")
+    );
+});
+
+
+// const getDataByCategoryId = asyncHandler(async (req, res) => {
+
+//   const { id } = req.params;   // ✅ get id from URL
+
+//   const category = await User.findById(id)
+//     .select("-password -refreshToken")
+//     .lean();
+
+//   if (!category) {
+//     throw new ApiError(404, "Category not found");
+//   }
+
+//   return res
+//     .status(200)
+//     .json(
+//       new ApiResponse(200, { contact }, "Contact fetched successfully")
+//     );
+// });
+
+
+
+
+export { getAllLists , getContactById, getContactsByCategory};
 

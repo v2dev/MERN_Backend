@@ -34,5 +34,24 @@ export const getAllBooks = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, { lists: lists }, "Books data fetched successfully"));
 });
 
+export const getBookById = asyncHandler(async (req, res) => {
+
+  const { id } = req.params;   // ✅ get id from URL
+  console.log("Book ID from URL:", id); // ✅ debug
+
+  const book = await Book.findById(id)
+    .lean();
+
+  if (!book) {
+    throw new ApiError(404, "Book not found");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, { book }, "Book fetched successfully")
+    );
+});
+
 
 

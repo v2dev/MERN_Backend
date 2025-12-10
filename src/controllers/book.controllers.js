@@ -70,6 +70,29 @@ export const deleteBook = asyncHandler(async (req, res) => {
     );
 });
 
+export const editItem = asyncHandler(async (req, res) => {
+	const { id } = req.params;
+	console.log('Book ID from URL:', id);
+	console.log('Incoming Update Payload:', req.body);
+
+	// Update the book
+	const updatedBook = await Book.findByIdAndUpdate(id, req.body, {
+		new: true, // return updated document
+		runValidators: true, // run schema validators
+	}).lean();
+
+	if (!updatedBook) {
+		throw new ApiError(404, 'Book not found');
+	}
+
+	return res
+		.status(200)
+		.json(
+			new ApiResponse(200, { book: updatedBook }, 'Item updated successfully'),
+		);
+});
+
+
 
 
 

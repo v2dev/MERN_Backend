@@ -76,7 +76,7 @@ export const getDataByCategory = asyncHandler(async (req, res) => {
      data = await User.find({ category: id })
     .select("-password -refreshToken")
     .lean();
-  }else if (categoryType === "Spritiual") {
+  }else if (categoryType === "Books") {
      data = await Book.find({ category: id })
     .lean();
   } else {

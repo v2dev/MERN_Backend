@@ -35,7 +35,6 @@ export const getAllBooks = asyncHandler(async (req, res) => {
 });
 
 export const getBookById = asyncHandler(async (req, res) => {
-
   const { id } = req.params;   // ✅ get id from URL
   console.log("Book ID from URL:", id); // ✅ debug
 
@@ -52,6 +51,25 @@ export const getBookById = asyncHandler(async (req, res) => {
       new ApiResponse(200, { book }, "Book fetched successfully")
     );
 });
+
+export const deleteBook = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  console.log("Book ID from URL:", id);
+
+  // Delete the book from the database
+  const book = await Book.findByIdAndDelete(id).lean();
+
+  if (!book) {
+    throw new ApiError(404, "Book not found");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, { book }, "Book deleted successfully")
+    );
+});
+
 
 
 

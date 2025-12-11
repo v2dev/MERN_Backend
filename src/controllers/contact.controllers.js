@@ -48,6 +48,47 @@ export const getContactById = asyncHandler(async (req, res) => {
     );
 });
 
+export const editContact = asyncHandler(async (req, res) => {
+	const { id } = req.params;
+
+	// Update the contact in the database
+	const updatedContact = await Contact.findByIdAndUpdate(id, req.body, {
+		new: true,
+		runValidators: false,
+	}).lean();
+
+	if (!updatedContact) {
+		throw new ApiError(404, 'Contact not found');
+	}
+
+	return res
+		.status(200)
+		.json(
+			new ApiResponse(
+				200,
+				{ contact: updatedContact },
+				'Contact updated successfully',
+			),
+		);
+});
+
+export const deleteContact = asyncHandler(async (req, res) => {
+	const { id } = req.params;
+	console.log('Contact ID from URL:', id);
+
+	// Delete the contact from the database
+	const contact = await Contact.findByIdAndDelete(id).lean();
+
+	if (!contact) {
+		throw new ApiError(404, 'Contact not found');
+	}
+
+	return res
+		.status(200)
+		.json(new ApiResponse(200, { contact }, 'Contact deleted successfully'));
+});
+
+
 
 
 

@@ -4,96 +4,94 @@ import { ApiError } from "../utils/api-error.js";
 import { asyncHandler } from "../utils/async-handler.js";
 import { User } from "../models/user.models.js";
 import { Book } from "../models/book.models.js";
+import { Contact } from '../models/contacts.models.js';
 
 export const createCategory = async (req, res) => {
-  try {
-    console.log("REQ BODY:", req.body); // ✅ debug
-    const category = await Category.create(req.body);
-    res.status(201).json({
-      success: true,
-      data: category,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+	try {
+		console.log('REQ BODY:', req.body); // ✅ debug
+		const category = await Category.create(req.body);
+		res.status(201).json({
+			success: true,
+			data: category,
+		});
+	} catch (error) {
+		res.status(400).json({
+			success: false,
+			message: error.message,
+		});
+	}
 };
 
 export const getAllCategories = asyncHandler(async (req, res) => {
-    //To fetch all fields
-    const lists = await Category.find()
-    .lean();
+	//To fetch all fields
+	const lists = await Category.find().lean();
 
-    if (!res.status(200)) {
-        throw new ApiError(404, "No Categories found");
-    }
+	if (!res.status(200)) {
+		throw new ApiError(404, 'No Categories found');
+	}
 
-    lists.forEach(list => {
-        console.log("List Username: ", list);
-    });
+	lists.forEach((list) => {
+		console.log('List Username: ', list);
+	});
 
-    return res
-    .status(200)
-    .json(new ApiResponse(200, { lists: lists }, "Lists fetched successfully"));
+	return res
+		.status(200)
+		.json(new ApiResponse(200, { lists: lists }, 'Lists fetched successfully'));
 });
 
 export const getCategoryType = asyncHandler(async (req, res) => {
-  const { id } = req.params; // categoryId
+	const { id } = req.params; // categoryId
 
-  // Fetch only the required category
-  const category = await Category.findById(id).lean();
-  if (!category) {
-    throw new ApiError(404, "Category not found");
-  }
+	// Fetch only the required category
+	const category = await Category.findById(id).lean();
+	if (!category) {
+		throw new ApiError(404, 'Category not found');
+	}
 
-  return res.status(200).json(
-    new ApiResponse(
-      200,
-      { type: category.type, category },
-      "Category type fetched successfully"
-    )
-  );
+	return res
+		.status(200)
+		.json(
+			new ApiResponse(
+				200,
+				{ type: category.type, category },
+				'Category type fetched successfully',
+			),
+		);
 });
 
 export const getDataByCategory = asyncHandler(async (req, res) => {
-  const { id } = req.params;   // this id is categoryId
-  console.log("getDataByCategory :: Category ID from URL: ", id);
+	const { id } = req.params; // this id is categoryId
+	console.log('getDataByCategory :: Category ID from URL: ', id);
 
-  const category = await Category.findById(id).lean();
-  
-  if (!category) {
-    throw new ApiError(404, "Category not found");
-  }
+	const category = await Category.findById(id).lean();
 
-  const categoryType = category.type;
-  console.log("getDataByCategory :: Fetched Category:", category.type); // ✅ debug
+	if (!category) {
+		throw new ApiError(404, 'Category not found');
+	}
 
-  let data = null;
+	const categoryType = category.type;
 
-  if (categoryType === "contact") {
-     data = await User.find({ category: id })
-    .select("-password -refreshToken")
-    .lean();
-  }else if (categoryType === "book") {
-     data = await Book.find({ category: id })
-    .lean();
-  } else {
-    throw new ApiError(400, "Invalid category type");
-  }
+	console.log('getDataByCategory :: Fetched Category:', category.type); // ✅ debug
 
-  console.log("getDataByCategory :: Fetched Data:", data); // ✅ debug
+	let data = null;
 
-  if (!data || data.length === 0) {
-    throw new ApiError(404, "No contacts found for this category");
-  }
+	if (categoryType === 'contact') {
+		data = await Contact.find({ category: id }).lean();
+	} else if (categoryType === 'book') {
+		data = await Book.find({ category: id }).lean();
+	} else {
+		throw new ApiError(400, 'Invalid category type');
+	}
 
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(200, { data }, "Data fetched successfully")
-    );
+	console.log('getDataByCategory :: Fetched Data:', data); // ✅ debug
+
+	if (!data || data.length === 0) {
+		throw new ApiError(404, 'No contacts found for this category');
+	}
+
+	return res
+		.status(200)
+		.json(new ApiResponse(200, { data }, 'Data fetched successfully'));
 });
 
 

@@ -21,27 +21,21 @@ app.use(
 );
 
 //  import the routes
-import healthCheckRouter from "./routes/healthcheck.routes.js";
+// import healthCheckRouter from "./routes/healthcheck.routes.js";
 import authRouter from "./routes/auth.routes.js";
-import listRouter from "./routes/list.routes.js";
-import productRouter from "./routes/product.routes.js";
+// import listRouter from "./routes/list.routes.js";
+// import productRouter from "./routes/product.routes.js";
 import categoryRouter from "./routes/category.routes.js";
 import bookRouter from "./routes/book.routes.js";
 import contactRouter from './routes/contact.routes.js';
 
-// import projectRouter from "./routes/project.routes.js";
-
-app.use('/api/v1/healthcheck', healthCheckRouter);
+// app.use('/api/v1/healthcheck', healthCheckRouter);
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/lists', listRouter);
-app.use('/api/v1/products', productRouter);
+// app.use('/api/v1/lists', listRouter);
+// app.use('/api/v1/products', productRouter);
 app.use('/api/v1/categories', categoryRouter);
 app.use('/api/v1/books', bookRouter);
 app.use('/api/v1/contacts', contactRouter);
-
-
-
-// app.use("/api/v1/projects", projectRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to basecampy");

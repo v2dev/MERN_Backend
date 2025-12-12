@@ -19,39 +19,40 @@ export const createContact = async (req, res) => {
 };
 
 export const getAllContacts = asyncHandler(async (req, res) => {
-    //To fetch all fields 
-    const lists = await Contact.find()
-    .lean();
+	const lists = await Contact.find().lean();
 
-    if (!res.status(200)) {
-        throw new ApiError(404, "No Contact found");
-    }
+	if (!res.status(200)) {
+		throw new ApiError(404, 'No Contact found');
+	}
 
-    return res
-    .status(200)
-    .json(new ApiResponse(200, { lists: lists }, "Contacts data fetched successfully"));
+	return res
+		.status(200)
+		.json(
+			new ApiResponse(
+				200,
+				{ lists: lists },
+				'Contacts data fetched successfully',
+			),
+		);
 });
 
 export const getContactById = asyncHandler(async (req, res) => {
+	const { id } = req.params;
+	const contact = await Contact.findById(id).lean();
 
-  const { id } = req.params;  
-  const contact = await Contact.findById(id).lean();
+	if (!contact) {
+		throw new ApiError(404, 'Contact not found');
+	}
 
-  if (!contact) {
-    throw new ApiError(404, "Contact not found");
-  }
-
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(200, { contact }, "Contact details fetched successfully")
-    );
+	return res
+		.status(200)
+		.json(
+			new ApiResponse(200, { contact }, 'Contact details fetched successfully'),
+		);
 });
 
 export const editContact = asyncHandler(async (req, res) => {
 	const { id } = req.params;
-
-	// Update the contact in the database
 	const updatedContact = await Contact.findByIdAndUpdate(id, req.body, {
 		new: true,
 		runValidators: false,
@@ -76,7 +77,6 @@ export const deleteContact = asyncHandler(async (req, res) => {
 	const { id } = req.params;
 	console.log('Contact ID from URL:', id);
 
-	// Delete the contact from the database
 	const contact = await Contact.findByIdAndDelete(id).lean();
 
 	if (!contact) {

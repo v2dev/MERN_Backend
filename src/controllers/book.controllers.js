@@ -92,6 +92,52 @@ export const editItem = asyncHandler(async (req, res) => {
 		);
 });
 
+export const toggleFavorite = asyncHandler(async (req, res) => {
+	const { id } = req.params;
+	const book = await Book.findById(id);
+
+	if (!book) {
+		throw new ApiError(404, 'Book not found');
+	}
+	const newFavoriteValue = !book.favorite;
+	book.favorite = newFavoriteValue;
+	await book.save();
+	return res
+		.status(200)
+		.json(new ApiResponse(200, { book }, 'Favorite toggled successfully'));
+});
+
+export const getAllBooksWithFavOnTop = asyncHandler(async (req, res) => {
+	const { isFavOnTop } = req.params;
+
+	console.log('isFavOnTop:', isFavOnTop);
+
+	// Convert string to boolean
+	const sortFavoritesOnTop = isFavOnTop === 'true';
+
+	let query = Book.find();
+
+	// Apply sorting only if client wants favorites on top
+	console.log('Sort favorites on top:', sortFavoritesOnTop);
+	if (sortFavoritesOnTop) {
+		query = query.sort({ favorite: -1 }); // true (1) first
+	}
+
+	const lists = await query.lean();
+
+	if (!lists || lists.length === 0) {
+		throw new ApiError(404, 'No Books found');
+	}
+
+	return res
+		.status(200)
+		.json(new ApiResponse(200, { lists }, 'Books data fetched successfully'));
+});
+
+
+
+
+
 
 
 

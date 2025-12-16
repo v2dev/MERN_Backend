@@ -92,6 +92,7 @@ export const toggleFavorite = asyncHandler(async (req, res) => {
 });
 
 export const getAllBooksWithFavOnTop = asyncHandler(async (req, res) => {
+	console.log('Fetching Books with favorite on top ==> ', req.params);
 	const { isFavOnTop } = req.params;
 
 	// Convert string to boolean

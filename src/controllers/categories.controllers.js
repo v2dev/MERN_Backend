@@ -28,9 +28,9 @@ export const getAllCategories = asyncHandler(async (req, res) => {
 		throw new ApiError(404, 'No Categories found');
 	}
 
-	lists.forEach((list) => {
-		console.log('List Username: ', list);
-	});
+	// lists.forEach((list) => {
+	// 	console.log('List Username: ', list);
+	// });
 
 	return res
 		.status(200)

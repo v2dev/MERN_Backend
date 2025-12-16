@@ -29,6 +29,10 @@ const contactsSchema = new Schema(
 			type: String,
 			trim: true,
 		},
+		favorite: {
+			type: Boolean,
+			default: false,
+		},
 		category: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Category', // must match model name in category.models.js

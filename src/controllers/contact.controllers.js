@@ -4,18 +4,19 @@ import { ApiError } from "../utils/api-error.js";
 import { asyncHandler } from "../utils/async-handler.js";
 
 export const createContact = async (req, res) => {
-  try {
-    const contact = await Contact.create(req.body);
-    res.status(201).json({
+	try {
+		console.log('Request Body:', req.body);
+		const contact = await Contact.create(req.body);
+		res.status(201).json({
 			success: true,
 			data: contact,
 		});
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+	} catch (error) {
+		res.status(400).json({
+			success: false,
+			message: error.message,
+		});
+	}
 };
 
 export const getAllContacts = asyncHandler(async (req, res) => {
@@ -104,7 +105,7 @@ export const toggleFavorite = asyncHandler(async (req, res) => {
 });
 
 export const getAllContactsWithFavOnTop = asyncHandler(async (req, res) => {
-	console.log('Fetching contacts with favorite on top ==> ', req.params);
+	// console.log('Fetching contacts with favorite on top ==> ', req.params);
 	const { isFavOnTop } = req.params;
 
 	// Convert string to boolean

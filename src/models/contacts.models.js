@@ -6,7 +6,7 @@ const contactsSchema = new Schema(
 			type: String,
 			required: true,
 			unique: true,
-			lowercase: true,
+			lowercase: false,
 			trim: true,
 			index: true,
 		},
@@ -30,6 +30,11 @@ const contactsSchema = new Schema(
 			trim: true,
 		},
 		favorite: {
+			type: Boolean,
+			default: false,
+		},
+		dob: Date,
+		reminder: {
 			type: Boolean,
 			default: false,
 		},

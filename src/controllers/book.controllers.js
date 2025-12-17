@@ -1,7 +1,7 @@
-import { Book } from "../models/book.models.js";
-import { ApiResponse } from "../utils/api-response.js";
-import { ApiError } from "../utils/api-error.js";
-import { asyncHandler } from "../utils/async-handler.js";
+import { Book } from '../models/book.models.js';
+import { ApiResponse } from '../utils/api-response.js';
+import { ApiError } from '../utils/api-error.js';
+import { asyncHandler } from '../utils/async-handler.js';
 
 export const createBook = async (req, res) => {
 	try {
@@ -18,18 +18,30 @@ export const createBook = async (req, res) => {
 	}
 };
 
-export const getAllBooks = asyncHandler(async (req, res) => {
-	const lists = await Book.find().lean();
+export const getBooks = asyncHandler(async (req, res) => {
+	const { search = '', sort, page = 1, limit = 20 } = req.query;
 
-	if (!res.status(200)) {
-		throw new ApiError(404, 'No Books found');
+	const filter = {};
+
+	// 🔍 Search by name only
+	if (search.trim()) {
+		filter.name = { $regex: search, $options: 'i' };
 	}
+
+	let query = Book.find(filter);
+
+	// ⭐ Favorites on top
+	if (sort === 'favorite') {
+		query = query.sort({ favorite: -1, name: 1 });
+	}
+
+	const skip = (page - 1) * limit;
+
+	const lists = await query.skip(skip).limit(Number(limit)).lean();
 
 	return res
 		.status(200)
-		.json(
-			new ApiResponse(200, { lists: lists }, 'Books data fetched successfully'),
-		);
+		.json(new ApiResponse(200, { lists }, 'Books fetched successfully'));
 });
 
 export const getBookById = asyncHandler(async (req, res) => {
@@ -90,37 +102,3 @@ export const toggleFavorite = asyncHandler(async (req, res) => {
 		.status(200)
 		.json(new ApiResponse(200, { book }, 'Favorite toggled successfully'));
 });
-
-export const getAllBooksWithFavOnTop = asyncHandler(async (req, res) => {
-	console.log('Fetching Books with favorite on top ==> ', req.params);
-	const { isFavOnTop } = req.params;
-
-	// Convert string to boolean
-	const sortFavoritesOnTop = isFavOnTop === 'true';
-
-	let query = Book.find();
-
-	// Apply sorting only if client wants favorites on top
-	if (sortFavoritesOnTop) {
-		query = query.sort({ favorite: -1 }); // true (1) first
-	}
-
-	const lists = await query.lean();
-
-	if (!lists || lists.length === 0) {
-		throw new ApiError(404, 'No Books found');
-	}
-
-	return res
-		.status(200)
-		.json(new ApiResponse(200, { lists }, 'Books data fetched successfully'));
-});
-
-
-
-
-
-
-
-
-

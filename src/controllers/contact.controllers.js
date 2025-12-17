@@ -19,24 +19,6 @@ export const createContact = async (req, res) => {
 	}
 };
 
-export const getAllContacts = asyncHandler(async (req, res) => {
-	const lists = await Contact.find().lean();
-
-	if (!res.status(200)) {
-		throw new ApiError(404, 'No Contact found');
-	}
-
-	return res
-		.status(200)
-		.json(
-			new ApiResponse(
-				200,
-				{ lists: lists },
-				'Contacts data fetched successfully',
-			),
-		);
-});
-
 export const getContactById = asyncHandler(async (req, res) => {
 	const { id } = req.params;
 	const contact = await Contact.findById(id).lean();
@@ -104,32 +86,34 @@ export const toggleFavorite = asyncHandler(async (req, res) => {
 		.json(new ApiResponse(200, { contact }, 'Favorite toggled successfully'));
 });
 
-export const getAllContactsWithFavOnTop = asyncHandler(async (req, res) => {
-	// console.log('Fetching contacts with favorite on top ==> ', req.params);
-	const { isFavOnTop } = req.params;
+export const getContacts = asyncHandler(async (req, res) => {
+	const { search = '', sort, page = 1, limit = 20 } = req.query;
 
-	// Convert string to boolean
-	const sortFavoritesOnTop = isFavOnTop === 'true';
+	const filter = {};
 
-	let query = Contact.find();
-
-	// Apply sorting only if client wants favorites on top
-	if (sortFavoritesOnTop) {
-		query = query.sort({ favorite: -1 }); // true (1) first
+	// 🔍 Search by name only
+	if (search.trim()) {
+		filter.name = { $regex: search, $options: 'i' };
 	}
 
-	const lists = await query.lean();
+	let query = Contact.find(filter);
 
-	if (!lists || lists.length === 0) {
-		throw new ApiError(404, 'No Contacts found');
+	// ⭐ Favorites on top
+	if (sort === 'favorite') {
+		query = query.sort({ favorite: -1, name: 1 });
 	}
+
+	const skip = (page - 1) * limit;
+
+	const lists = await query.skip(skip).limit(Number(limit)).lean();
+	console.log('Fetched Contacts:', lists);
 
 	return res
 		.status(200)
-		.json(
-			new ApiResponse(200, { lists }, 'Contacts data fetched successfully'),
-		);
+		.json(new ApiResponse(200, { lists }, 'Contacts fetched successfully'));
 });
+
+
 
 
 

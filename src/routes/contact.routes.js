@@ -1,21 +1,22 @@
-import { Router } from "express";
+import { Router } from 'express';
 import {
 	createContact,
-	getAllContacts,
+	getContacts,
 	getContactById,
 	editContact,
 	deleteContact,
 	toggleFavorite,
-	getAllContactsWithFavOnTop,
 } from '../controllers/contact.controllers.js';
 
 const router = Router();
 
-router.route('/').post(createContact);
-router.route('/').get(getAllContacts);
-router.route('/:id').get(getContactById);
-router.route('/:id').put(editContact);
-router.route('/:id').delete(deleteContact);
+// 🔥 COLLECTION ROUTE (search, sort, pagination)
+router.route('/').post(createContact).get(getContacts);
+
+// 🔥 SINGLE RESOURCE
+router.route('/:id').get(getContactById).put(editContact).delete(deleteContact);
+
+// 🔥 ACTION ON RESOURCE
 router.route('/:id/favorite').patch(toggleFavorite);
-router.route('/favorites/top/:isFavOnTop').get(getAllContactsWithFavOnTop);
+
 export default router;

@@ -1,6 +1,6 @@
 import cron from 'node-cron';
 import {Contact} from '../models/contacts.models.js';
-import { sendSMS } from '../services/sms.service.js';
+import { sendSMS } from '../services/sms/sms.service.js';
 // import { sendEmail } from '../services/email.service.js';
 
 cron.schedule(

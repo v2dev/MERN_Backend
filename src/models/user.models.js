@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 
-const userSchema = new Schema(
+const UserSchema = new Schema(
 	{
 		avatar: {
 			type: {
@@ -65,4 +65,4 @@ const userSchema = new Schema(
 	{ timestamps: true },
 );
 
-export const User = mongoose.model('User', userSchema);
+export const User = mongoose.model('User', UserSchema);

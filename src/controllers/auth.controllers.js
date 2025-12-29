@@ -12,7 +12,13 @@ export const AuthController = ({
 	return {
 		register: async (req, res, next) => {
 			try {
-				const result = await registerUser.execute(req.body, req);
+				const input = {
+					...req.body,
+					host: req.get('host'),
+				};
+
+				const result = await registerUser.execute(input);
+
 				res.status(201).json(result);
 			} catch (err) {
 				next(err);
@@ -21,7 +27,8 @@ export const AuthController = ({
 
 		login: async (req, res, next) => {
 			try {
-				const result = await loginUser.execute(req.body, res);
+				const result = await loginUser.execute(req.body);
+
 				res.status(200).json(result);
 			} catch (err) {
 				next(err);

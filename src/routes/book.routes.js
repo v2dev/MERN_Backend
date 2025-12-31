@@ -1,22 +1,19 @@
-import { Router } from "express";
-import {
-	createBook,
-	getBooks,
-	getBookById,
-	editItem,
-	deleteBook,
-	toggleFavorite,
-} from '../controllers/book.controllers.js';
+import { Router } from 'express';
+import { bookController } from '../container/book.container.js';
 
 const router = Router();
 
-// 🔥 COLLECTION ROUTE (search, sort, pagination)
-router.route('/').post(createBook).get(getBooks);
+// Collection routes
+router.route('/').post(bookController.create).get(bookController.list);
 
-// 🔥 SINGLE RESOURCE
-router.route('/:id').get(getBookById).put(editItem).delete(deleteBook);
+// Single resource
+router
+	.route('/:id')
+	.get(bookController.get)
+	.put(bookController.update)
+	.delete(bookController.remove);
 
-// 🔥 ACTION ON RESOURCE
-router.route('/:id/favorite').patch(toggleFavorite);
+// Action
+router.route('/:id/favorite').patch(bookController.toggleFavorite);
 
 export default router;
